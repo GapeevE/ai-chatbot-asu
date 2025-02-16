@@ -8,9 +8,7 @@ from models.index import ChatMessage
 CHROMA_PATH = "./db_metadata_v5"
 
 model = OllamaLLM(model="llama3.2:latest", temperature=0.1)
-
 embedding_function = OllamaEmbeddings(model="mxbai-embed-large")
-
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 chat_history = {}
 
