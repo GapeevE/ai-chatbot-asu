@@ -12,7 +12,7 @@ import re
 import os
 from urllib.parse import urlparse
 
-FILE_TO_PARSE = "data/q.txt"
+FILE_TO_PARSE = "data/links.txt"
 DIR_TO_STORE = "docs"
 DIR_TO_CACHE = "cache"
 REPARSING_DATA = False
@@ -133,7 +133,10 @@ def process_docx(docx_filepath, output_filepath, link):
                 output_lines.append([element_index, paragraph_text, min(font_sizes), alignment_row, font_weights])
                 element_index += 1
             elif isinstance(element, docx.oxml.table.CT_Tbl):
-                table_header = output_lines[element_index - 1][3]
+                if element_index != 0:
+                    table_header = output_lines[element_index - 1][3]
+                else:
+                    table_header = "mix"
                 for table in doc.tables:
                     num_rows = len(table.rows)
                     num_cols = len(table.columns)
@@ -293,7 +296,7 @@ def parsing_html(res, link):
         modal = main_section.find("div", {"class": "modal", "id": "modal_container"})
         if modal:
             modal.decompose()
-            breadcrumbs_ul = main_section.find("ul", {"class": "breadcrumbs-ul"})
+        breadcrumbs_ul = main_section.find("ul", {"class": "breadcrumbs-ul"})
         if breadcrumbs_ul:
             breadcrumbs_ul.decompose()
 
@@ -419,7 +422,7 @@ def parsing_html(res, link):
         if output_filepath and len(content) > 0:
             filepath = os.path.join(DIR_TO_STORE, f"{output_filepath}.txt")
             with open(filepath, "w", encoding="utf-8") as outfile:
-                outfile.write(f"URL: {link}")
+                outfile.write(f"URL: {link}\n")
                 for line in content:
                     outfile.write(f"{line}\n")
             print(f"Контент успешно сохранен в {filepath}")
